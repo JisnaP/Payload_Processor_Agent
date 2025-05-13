@@ -1,14 +1,32 @@
 from agent.graph import build_graph
-
-if __name__=='__main__':
-
+import streamlit as st
+import json
+def process_payload(payload):
     graph=build_graph()
-    #example input
-    input_state = {
-        "payload": [{"customer_remark": "I love your service!"}],
-        "answer": [],
-        "text": "",
-        "tag": ""
+    response=graph.invoke(payload)
+    return response
+
+st.title("Langgraph Payload Processor")
+sample_payload={
+    
+    "payload":[
+    {
+        "customer_remarks":"I really appreciate your service"
     }
-    result=graph.invoke(input_state)
-    print(result)
+]
+
+}
+st.subheader("Sample Payload Format")
+st.json(sample_payload,expanded=True)
+
+st.subheader("Enter your payload here")
+user_input=st.text_area(
+    "Paste your json payload here",value=json.dumps(sample_payload,indent=4),height=200)
+if st.button("Submit"):
+    try:
+        payload=json.loads(user_input)
+        st.success("Payload successfully parsed")
+        response=process_payload(payload)
+        st.write(response)
+    except json.JSONDecodeError as e:
+        st.error(f"Invalid json format: {e}")
