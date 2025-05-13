@@ -27,6 +27,7 @@ if st.button("Submit"):
         payload=json.loads(user_input)
         st.success("Payload successfully parsed")
         response=process_payload(payload)
-        st.write(response)
+        st.write("Answer",response["answer"][-1])
+        st.write("Tag",response["tag"])
     except json.JSONDecodeError as e:
         st.error(f"Invalid json format: {e}")
